@@ -8,8 +8,8 @@ int main(void)
 	//SendByte(USART1, 'Z');
 	//SendHalfWorrd(USART1, 0xff56);
 	//SendArray(USART1 ,a ,10);
-  //SendStr(USART1 ,"李东岳\n" );
-	printf("李东岳李东岳李东岳李东岳LSP\n");
+  //SendStr(USART1 ,"脌卯露芦脭脌\n" );
+	printf("脌卯露芦脭脌脌卯露芦脭脌脌卯露芦脭脌脌卯露芦脭脌LSP\n");
 	
 	while(1) 
 	{
