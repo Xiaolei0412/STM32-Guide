@@ -5,20 +5,20 @@ void USART_Config(void)
 	GPIO_InitTypeDef  GPIO_Initstruct;       //"stm32f10x_gpio.h"
   USART_InitTypeDef USART_Initstruct;     //"stm32f10x_usart.h"
 
-  //³õÊ¼»¯´®¿ÚĞèÒªÓÃµ½µÄGPIO A9 ·¢ËÍ TX
+  //åˆå§‹åŒ–ä¸²å£éœ€è¦ç”¨åˆ°çš„GPIO A9 å‘é€ TX
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  //"stm32f10x_rcc.h"
   GPIO_Initstruct.GPIO_Pin = GPIO_Pin_9;
 	GPIO_Initstruct.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_Initstruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_Initstruct);
 	
-	//³õÊ¼»¯´®¿ÚĞèÒªÓÃµ½µÄGPIO A10 ½ÓÊÕ RX
+	//åˆå§‹åŒ–ä¸²å£éœ€è¦ç”¨åˆ°çš„GPIO A10 æ¥æ”¶ RX
   //RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
   GPIO_Initstruct.GPIO_Pin =  GPIO_Pin_10;
 	GPIO_Initstruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_Initstruct);
 	
-  //³õÊ¼»¯´®¿Ú£¬USART_InitTypeDef 
+  //åˆå§‹åŒ–ä¸²å£ï¼ŒUSART_InitTypeDef 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);         //"stm32f10x_rcc.h"
 	USART_Initstruct.USART_BaudRate = 115200;                     //"stm32f10x_usart.h"
 	USART_Initstruct.USART_WordLength = USART_WordLength_8b ;    //"stm32f10x_usart.h"
@@ -28,78 +28,78 @@ void USART_Config(void)
 	USART_Initstruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None ;
 	USART_Init(USART1, &USART_Initstruct);
 	
-//	//ÖĞ¶ÏÅäÖÃ£¨½ÓÊÕÖĞ¶Ï£¬ÖĞ¶ÏÓÅÏÈ¼¶£©
+//	//ä¸­æ–­é…ç½®ï¼ˆæ¥æ”¶ä¸­æ–­ï¼Œä¸­æ–­ä¼˜å…ˆçº§ï¼‰
 //  NVIC_Config(); 
-//	//Ê¹ÄÜ´®¿Ú½ÓÊÕÖĞ¶Ï
+//	//ä½¿èƒ½ä¸²å£æ¥æ”¶ä¸­æ–­
 //	USART_ITConfig(USART1, USART_IT_RXNE ,ENABLE);    //"stm32f10x_usart.h"
-	//RXNE£º¶ÁÊı¾İ¼Ä´æÆ÷·Ç¿Õ  1£ºÊÕµ½Êı¾İ£¬¿ÉÒÔ¶Á³ö¡£
-	//Ê¹ÄÜ´®¿Ú£»
+	//RXNEï¼šè¯»æ•°æ®å¯„å­˜å™¨éç©º  1ï¼šæ”¶åˆ°æ•°æ®ï¼Œå¯ä»¥è¯»å‡ºã€‚
+	//ä½¿èƒ½ä¸²å£ï¼›
 	USART_Cmd(USART1, ENABLE);                        //"stm32f10x_usart.h"
 }
 
-/*----------------------·¢ËÍµ¥¸ö×Ö·û--------------------------------*/
+/*----------------------å‘é€å•ä¸ªå­—ç¬¦--------------------------------*/
 void SendByte(USART_TypeDef* USARTx, uint8_t data)
 {
 	USART_SendData(USARTx,data);
-	/* µÈ´ı·¢ËÍÍê±Ï */
+	/* ç­‰å¾…å‘é€å®Œæ¯• */
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
 }
 
-/*----------------------·¢ËÍË«¸ö×Ö·û--------------------------------*/
+/*----------------------å‘é€åŒä¸ªå­—ç¬¦--------------------------------*/
 void SendHalfWorrd(USART_TypeDef* USARTx, uint16_t data)
 {
 	uint8_t temp_h,temp_l;
 	
-	temp_h = (data&0xff00) >> 8 ;   //È¡µÃ¸ß°ËÎ»
-	temp_l = data&0xff ;            //È¡µÃµÍ°ËÎ»
+	temp_h = (data&0xff00) >> 8 ;   //å–å¾—é«˜å…«ä½
+	temp_l = data&0xff ;            //å–å¾—ä½å…«ä½
 	 
 	USART_SendData(USARTx,temp_h);                   //"stm32f10x_usart.h"
-	/* µÈ´ı·¢ËÍÍê±Ï */
+	/* ç­‰å¾…å‘é€å®Œæ¯• */
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );   //"stm32f10x_usart.h"
 	
 	USART_SendData(USARTx,temp_l);                  //"stm32f10x_usart.h"
-	/* µÈ´ı·¢ËÍÍê±Ï */
+	/* ç­‰å¾…å‘é€å®Œæ¯• */
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
 }
 
-/*----------------------·¢ËÍ8Î»Êı×é--------------------------------*/
+/*----------------------å‘é€8ä½æ•°ç»„--------------------------------*/
 void SendArray(USART_TypeDef* USARTx , uint8_t *array ,uint8_t num )
 {
 	uint8_t i;
 	for(i=0;i<num;i++)
 	{
-		SendByte(USARTx,array[i]);   //¡°Ç°Ãæ×Ô¼ºĞ´µÄ¡±
+		SendByte(USARTx,array[i]);   //â€œå‰é¢è‡ªå·±å†™çš„â€
 	}
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET );
 
 }
 
-/*----------------------·¢ËÍ×Ö·û´®--------------------------------*/
+/*----------------------å‘é€å­—ç¬¦ä¸²--------------------------------*/
 void SendStr(USART_TypeDef* USARTx ,uint8_t *str )
 {
 	uint8_t i=0;
 	do
 	{
-		SendByte(USARTx,*(str+i));  //¡°Ç°Ãæ×Ô¼ºĞ´µÄ¡±
+		SendByte(USARTx,*(str+i));  //â€œå‰é¢è‡ªå·±å†™çš„â€
 		i++;
 	}while(*(str+i) != '\0' );  
-// '\0' ÊÇ×Ö·û´®µÄ½áÊø·û ¡®\0¡¯×ªÒå×Ö·ûµÄASCIIÂëÖµÎª0£¬Ëü±íÊ¾µÄÊÇASCII¿ØÖÆ×Ö·ûÖĞ¿Õ×Ö·ûµÄº¬Òå
+// '\0' æ˜¯å­—ç¬¦ä¸²çš„ç»“æŸç¬¦ â€˜\0â€™è½¬ä¹‰å­—ç¬¦çš„ASCIIç å€¼ä¸º0ï¼Œå®ƒè¡¨ç¤ºçš„æ˜¯ASCIIæ§åˆ¶å­—ç¬¦ä¸­ç©ºå­—ç¬¦çš„å«ä¹‰
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET );
 }
 
-/*-------ÖØ¶¨Ïòc¿âº¯Êıprintfµ½´®¿Ú£¬ÖØ¶¨Ïòºó¿ÉÊ¹ÓÃprintfº¯Êı-------*/
+/*-------é‡å®šå‘cåº“å‡½æ•°printfåˆ°ä¸²å£ï¼Œé‡å®šå‘åå¯ä½¿ç”¨printfå‡½æ•°-------*/
 int fputc(int ch,FILE*f)
 {
 	USART_SendData(USART1,(uint8_t) ch);                          //"stm32f10x_usart.h"
-	/* µÈ´ı·¢ËÍÍê±Ï */
+	/* ç­‰å¾…å‘é€å®Œæ¯• */
 	while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET );
 	return (ch);
 }
 
-//---ÖØ¶¨Ïòc¿âº¯Êıscanfµ½´®¿Ú£¬ÖØĞ´Ïòºó¿ÉÊ¹ÓÃscanf¡¢getcharµÈº¯Êı---*/
+//---é‡å®šå‘cåº“å‡½æ•°scanfåˆ°ä¸²å£ï¼Œé‡å†™å‘åå¯ä½¿ç”¨scanfã€getcharç­‰å‡½æ•°---*/
 int fgetc(FILE *f)
 {
-	/* µÈ´ı´®¿ÚÊäÈëÊı¾İ */
+	/* ç­‰å¾…ä¸²å£è¾“å…¥æ•°æ® */
 	while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET); //"stm32f10x_usart.h"
 	return (int)USART_ReceiveData(USART1);    
 }
